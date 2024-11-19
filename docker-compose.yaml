@@ -1,0 +1,68 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    hostname: "rabbitmq"
+    labels:
+      NAME: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  service1:
+    build:
+      context: ./service1
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq
+  service2:
+    build:
+      context: ./service2
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq
+  service3:
+    build:
+      context: ./service3
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq
+  service4:
+    build:
+      context: ./service4
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq
+  service5:
+    build:
+      context: ./service5
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq
+  service6:
+    build:
+      context: ./service6
+      dockerfile: Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      - RABBITMQ_SVC_NAME=rabbitmq

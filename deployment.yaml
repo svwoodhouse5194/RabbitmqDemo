@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  namespace: rabbitmq-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pythonservicea
+  template:
+    metadata:
+      labels:
+        app: pythonservicea
+    spec:
+      containers:
+      - name: pythonservicea-container
+        image: swoodhouse5194/pythonservicea:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi   
+        command: ["/bin/sh", "-ec", "sleep 10000"]
+      - name: nodejsservicea-container
+        image: swoodhouse5194/nodejsservicea:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        command: ["/bin/sh", "-ec", "sleep 10000"]
+      - name: nodejsserviceb-container
+        image: swoodhouse5194/nodejsserviceb:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        command: ["/bin/sh", "-ec", "sleep 10000"]
