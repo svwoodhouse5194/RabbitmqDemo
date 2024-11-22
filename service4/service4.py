@@ -7,12 +7,16 @@ import json
 # This function sends messages to the next service
 def sendMessage(message):
     # Connects to the RabbitMQ server
+    username = os.getenv('USER', 'guest')
+    pw = os.getenv('PASS', 'guest')
     host = os.getenv('RABBITMQ_SVC_NAME', 'localhost')
 
+    credentials = pika.PlainCredentials(username, pw)
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=host),
-    )
-
+        pika.ConnectionParameters(host,
+                                        5672,
+                                        '/',
+                                        credentials))
     channel = connection.channel()
     channel.exchange_declare(exchange="siblingExchange", exchange_type="fanout")
 
@@ -33,9 +37,16 @@ def sendMessage(message):
 
 def main():
     # Connects to the RabbitMQ server
+    username = os.getenv('USER', 'guest')
+    pw = os.getenv('PASS', 'guest')
     host = os.getenv('RABBITMQ_SVC_NAME', 'localhost')
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+    credentials = pika.PlainCredentials(username, pw)
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host,
+                                        5672,
+                                        '/',
+                                        credentials))
     channel = connection.channel()
 
     # Declares the queue

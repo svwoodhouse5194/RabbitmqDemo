@@ -33,7 +33,18 @@ func sendMessage(message Message) {
 		host = "localhost"
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@" + host + ":5672/")
+	user, ok := os.LookupEnv("USER")
+	if !ok {
+		host = "guest"
+	}
+
+	pass, ok := os.LookupEnv("PASS")
+	if !ok {
+		host = "guest"
+	}
+
+	conn, err := amqp.Dial("amqp://" + user + ":" + pass + "@" + host + ":5672/")
+
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -82,13 +93,24 @@ func sendMessage(message Message) {
 }
 
 func main() {
-	// Connects to RabbitMQ server
+	// Connects to the RabbitMQ server
 	host, ok := os.LookupEnv("RABBITMQ_SVC_NAME")
 	if !ok {
 		host = "localhost"
 	}
 
-	conn, err := amqp.Dial("amqp://guest:guest@" + host + ":5672/")
+	user, ok := os.LookupEnv("USER")
+	if !ok {
+		host = "guest"
+	}
+
+	pass, ok := os.LookupEnv("PASS")
+	if !ok {
+		host = "guest"
+	}
+
+	conn, err := amqp.Dial("amqp://" + user + ":" + pass + "@" + host + ":5672/")
+
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 

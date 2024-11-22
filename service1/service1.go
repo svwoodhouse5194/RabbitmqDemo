@@ -1,21 +1,21 @@
 package main
 
 import (
-	"context"
-	"log"
-	"time"
-	"fmt"
 	"bytes"
-	"os"
+	"context"
 	"encoding/gob"
+	"fmt"
+	"log"
+	"os"
+	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type Message struct {
-    Name string
-    Body string
-    Time int64
+	Name    string
+	Body    string
+	Time    int64
 	History []string
 }
 
@@ -31,8 +31,19 @@ func main() {
 	if !ok {
 		host = "localhost"
 	}
-	conn, err := amqp.Dial("amqp://guest:guest@" + host + ":5672/")
-	
+
+	user, ok := os.LookupEnv("USER")
+	if !ok {
+		host = "guest"
+	}
+
+	pass, ok := os.LookupEnv("PASS")
+	if !ok {
+		host = "guest"
+	}
+
+	conn, err := amqp.Dial("amqp://" + user + ":" + pass + "@" + host + ":5672/")
+
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -43,11 +54,11 @@ func main() {
 	// Declares the queue
 	q, err := ch.QueueDeclare(
 		"goQueue", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -55,7 +66,7 @@ func main() {
 
 	// Creates the message
 	m := Message{Name: "Jane Doe", Body: "Sent from Go Service 1", Time: time.Now().Unix(), History: []string{"Message was created in Service 1"}}
-	
+
 	// Create a buffer to hold the serialized data
 	var buf bytes.Buffer
 
@@ -76,7 +87,7 @@ func main() {
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        buf.Bytes(),
-	})
+		})
 
 	failOnError(err, "Failed to publish a message")
 	log.Printf(" [x] Sent message to Service 2")

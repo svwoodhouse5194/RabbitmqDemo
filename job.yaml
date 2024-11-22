@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: service1job
+spec:
+  template:
+    metadata:
+      labels:
+        app: service1
+    spec:
+      containers:
+      - name: service1-container
+        image: swoodhouse5194/service1:latest
+        env:
+        - name: USER
+          valueFrom:
+            secretKeyRef:
+              name: user
+              key: password
+        - name: PASS
+          valueFrom:
+            secretKeyRef:
+              name: pw
+              key: password
+        - name: RABBITMQ_SVC_NAME
+          value: "rabbitmq-demo"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        command: ["go", "run", "service1.go"]
+      restartPolicy: Never

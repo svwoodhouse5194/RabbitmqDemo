@@ -1,5 +1,4 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-  name: definition
-  namespace: rabbitmq-system
+  name: rabbitmq-demo

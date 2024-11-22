@@ -1,6 +1,7 @@
-# Use an official Python runtime as a parent image
-FROM golang:alpine3.20
+# Use an official Go runtime as a parent image
+FROM golang:1.23.3
 
+ENV export GOARM=7
 # Set the working directory in the container
 WORKDIR /app
 
